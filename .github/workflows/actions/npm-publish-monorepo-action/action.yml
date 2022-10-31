@@ -38,7 +38,7 @@ outputs:
 
 runs:
   using: docker
-  image: Dockerfile
+  image: ./Dockerfile
 
 branding:
   icon: package
