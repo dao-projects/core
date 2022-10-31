@@ -1,5 +1,8 @@
 {
   "name": "@daoxin/storage",
-  "version": "0.0.1",
-  "main": "index.js"
+  "version": "0.0.2",
+  "main": "index.js",
+  "scripts": {
+    "push": "npm publish --access public"
+  }
 }
