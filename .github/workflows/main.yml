@@ -1,0 +1,74 @@
+name: Publish Package to npmjs
+
+# 触发工作流程的事件
+on:
+  push:
+    branches: [ main ]
+ 
+# 按顺序运行作业   
+jobs:
+  build:
+    # 指定的运行器环境
+    runs-on: ubuntu-latest
+
+    # 设置node版本
+    strategy:
+      matrix:
+        node-version: [16]
+
+    steps:
+      # 拉取github仓库代码
+      - uses: actions/checkout@v3
+      # 设定node环境
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          # 设置npm地址仓库
+          registry-url: 'https://registry.npmjs.org'
+
+      # - name: 安装依赖📦️
+      #   run: npm install
+
+      # - name: 构建📦️
+      #   run: npm run build
+      
+      - name: 发布npm仓库
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+        run: npm run push
+
+          
+      # # 安装依赖(相当于 npm ci)
+      # - name: 安装依赖 📦️
+      #   run: npm install
+
+      # # 构建
+      # - name: 构建 📦️
+      #   run: npm run build
+
+      # # 部署
+      # - name: 部署 📦️
+      # # action会根据配置自动推送代码到指定分支
+      #   uses: JamesIves/github-pages-deploy-action@releases/v3
+      #   with:
+      #     # 指定密钥，即在第一步中设置的
+      #     ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      #     # 指定推送到的远程分支
+      #     BRANCH: pages
+      #     # 指定构建之后的产物要推送哪个目录的代码
+      #     FOLDER: dist
+      # - run: npm publish
+      #   env:
+      #     # 设置的 NPM_AUTH_TOKEN
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      #     
+      #  ---------------------------------------------------
+      #  - name: 编译部署ui
+      #   working-directory: 'package/vitevui' # 因为代码采用的monorepo 所以需要进入包的目录来运行
+      #   run: yarn build
+        
+      # - name: publish # 向npm publish 代码 请遵循npm规范.
+      #   working-directory: 'package/vitevui'
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}} # 该token是 npm的token 获取npm token请查看 步骤2 的创建 npm token 和 将npm token 放入github的 secrets下
+      #   run: npm publish
