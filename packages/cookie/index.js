@@ -74,4 +74,6 @@ export const cookie = {
     },
 };
 
-// GITHUB_PUBLISH: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
+
+// NPM_AUTH_TOKEN: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
+// ACCESS_TOKEN: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
