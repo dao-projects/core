@@ -74,6 +74,3 @@ export const cookie = {
     },
 };
 
-
-// NPM_AUTH_TOKEN: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
-// ACCESS_TOKEN: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
