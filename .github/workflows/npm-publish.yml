@@ -1,28 +1,60 @@
-name: npm-publish
+name: Node.js Package
+
 on:
   push:
     branches:
-      - main # Change this to your default branch
+      - main
+
 jobs:
-  npm-publish:
-    name: npm-publish
+  build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Publish if version has been updated
-      uses: wtrocki/npm-publish-monorepo-action@2.0.0
-      with: 
-        workspace: "./packages" # Required
-        versionFrom: "."
-        tag_name: "v%s"
-        tag_message: "v%s"
-        create_tag: "true"
-        commit_pattern: "^chore: Release (\\S+)"
-        publish_args: "--non-interactive --dry-run"
-      env: # More info about the environment variables in the README
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }} # Leave this as is, it's automatically generated
-        NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # You need to set this in your repo settings
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: npm test
+
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+
+# name: npm-publish
+# on:
+#   push:
+#     branches:
+#       - main # Change this to your default branch
+# jobs:
+#   npm-publish:
+#     name: npm-publish
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Checkout repository
+#       uses: actions/checkout@v2
+#     - name: Publish if version has been updated
+#       uses: wtrocki/npm-publish-monorepo-action@2.0.0
+#       with: 
+#         workspace: "./packages" # Required
+#         versionFrom: "."
+#         tag_name: "v%s"
+#         tag_message: "v%s"
+#         create_tag: "true"
+#         commit_pattern: "^chore: Release (\\S+)"
+#         publish_args: "--non-interactive --dry-run"
+#       env: # More info about the environment variables in the README
+#         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }} # Leave this as is, it's automatically generated
+#         NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # You need to set this in your repo settings
 
 # name: npm-publish
 # on:
